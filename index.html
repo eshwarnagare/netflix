@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Netflix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@700&family=Afacad:wght@700&family=Amaranth&family=Inder&family=Inria+Sans&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================
+       Design tokens
+       ========================================================== */
+    :root {
+      /* colors */
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-brand: #c8051f;
+      --color-nav: #9f9090;
+      --color-text-soft: #dcd8d8;
+      --color-text-subtle: #d9d9d9;
+      --color-pill: #f90505;
+      --color-pill-alt: #f90404;
+      --color-button: #ff0606;
+      --color-button-alt: #fd0606;
+      --color-sort: #f70404;
+      --color-icon-bg: #100202;
+      --color-legal-bg: #f9dddd;
+      --color-legal-text: #615252;
+      --color-legal-text-alt: #7f7676;
+
+      /* font families */
+      --font-afacad: "Afacad", sans-serif;
+      --font-inder: "Inder", sans-serif;
+      --font-amaranth: "Amaranth", sans-serif;
+      --font-inria: "Inria Sans", sans-serif;
+      --font-42dot: "42dot Sans", sans-serif;
+
+      /* font sizes */
+      --fs-13: 13px;
+      --fs-14: 14px;
+      --fs-15: 15px;
+      --fs-16: 16px;
+      --fs-20: 20px;
+      --fs-24: 24px;
+      --fs-32: 32px;
+      --fs-40: 40px;
+      --fs-64: 64px;
+      --fs-96: 96px;
+
+      /* spacing */
+      --space-4: 4px;
+      --space-8: 8px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-24: 24px;
+      --space-32: 32px;
+      --space-48: 48px;
+
+      /* radius */
+      --radius-pill: 20px;
+
+      /* layout */
+      --canvas-width: 1440px;
+      --transition-menu: 0.35s ease;
+    }
+
+    /* ==========================================================
+       Base
+       ========================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--color-black);
+      color: var(--color-white);
+      font-family: var(--font-inder);
+      line-height: normal;
+    }
+    h1, h2, h3, p, ul, figure { margin: 0; padding: 0; }
+    ul { list-style: none; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+    .page {
+      position: relative;
+      width: 100%;
+      max-width: var(--canvas-width);
+      margin: 0 auto;
+      overflow-x: clip;
+      background: var(--color-black);
+    }
+
+    /* ==========================================================
+       Header / Navigation
+       ========================================================== */
+    .header { position: relative; height: 186px; }
+    .header__logo {
+      position: absolute;
+      left: 48px;
+      top: 82px;
+      width: 285px;
+      height: 112px;
+      font-family: var(--font-afacad);
+      font-weight: 700;
+      font-size: var(--fs-64);
+      color: var(--color-brand);
+    }
+    .header__toggle { display: none; }
+
+    .nav { position: absolute; left: 613px; top: 117px; }
+    .nav__list { display: flex; }
+    .nav__item { flex: 0 0 auto; width: 130px; }
+    .nav__item--profile { width: 125px; }
+    .nav__item--movie { width: 119px; }
+    .nav__item--webseries { width: 179px; }
+    .nav__item--help { width: 77px; }
+    .nav__link {
+      display: block;
+      font-family: var(--font-inder);
+      font-size: var(--fs-24);
+      color: var(--color-nav);
+    }
+    .nav__link:focus-visible,
+    .header__logo:focus-visible { outline: 2px solid var(--color-white); outline-offset: 4px; }
+
+    /* ==========================================================
+       Hero
+       ========================================================== */
+    .hero { position: relative; height: 710px; }
+    .hero__media {
+      position: relative;
+      margin-left: 3px;
+      width: 1437px;
+      height: 710px;
+      overflow: hidden;
+      container-type: inline-size;
+    }
+    .hero__img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 49.41cqw;
+      height: 100cqw;
+      object-fit: cover;
+      transform: translate(-50%, -50%) rotate(-90deg);
+    }
+    .hero__content { position: absolute; inset: 0; }
+    .hero__stats, .hero__actions { display: contents; }
+
+    .hero__season {
+      position: absolute; left: 174px; top: 95px; width: 208px;
+      font-family: var(--font-afacad); font-weight: 700; font-size: var(--fs-15);
+      color: var(--color-text-soft);
+    }
+    .hero__star { position: absolute; left: 97px; top: 151px; width: 15px; height: 15px; }
+    .hero__score {
+      position: absolute; left: 115px; top: 150px;
+      font-family: var(--font-afacad); font-weight: 700; font-size: var(--fs-15);
+      color: var(--color-white);
+    }
+    .hero__details {
+      position: absolute; left: 166px; top: 150px; width: 268px;
+      font-family: var(--font-afacad); font-weight: 700; font-size: var(--fs-15);
+      color: var(--color-text-subtle); white-space: pre;
+    }
+    .hero__title {
+      position: absolute; left: 91px; top: 182px; width: 522px;
+      font-family: var(--font-amaranth); font-weight: 400; font-size: var(--fs-96);
+      color: var(--color-white);
+    }
+    .hero__text {
+      position: absolute; left: 60px; top: 335px; width: 503px;
+      font-family: var(--font-inder); font-size: var(--fs-20);
+      color: var(--color-text-soft);
+    }
+    .hero__btn {
+      position: absolute; top: 439px; width: 113px; height: 41px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-inder); font-size: var(--fs-20); color: var(--color-white);
+      text-align: left;
+    }
+    .hero__btn--watch { left: 77px; background: var(--color-button); }
+    .hero__btn--list { left: 220px; background: var(--color-button-alt); }
+    .hero__btn-icon { position: absolute; left: 6px; top: 3px; width: 32px; height: 32px; }
+    .hero__btn-label { position: absolute; top: 7px; white-space: nowrap; }
+    .hero__btn--watch .hero__btn-label { left: 37px; }
+    .hero__btn--list .hero__btn-label { left: 34px; }
+    .hero__indicator {
+      position: absolute; left: 680px; top: 676px; width: 80px; height: 6px;
+      border-radius: var(--radius-pill); background: var(--color-text-subtle);
+    }
+
+    /* ==========================================================
+       Sections (trending / movies)
+       ========================================================== */
+    .section { position: relative; }
+    .section--trending { height: 880px; }
+    .section--movies { height: 799px; }
+
+    .section__title {
+      position: absolute; left: 133px; top: 29px;
+      font-family: var(--font-inder); font-weight: 400; font-size: var(--fs-32);
+      color: var(--color-white);
+    }
+    .section__title--movies {
+      left: 137px; top: 41px;
+      font-family: var(--font-inria); font-size: var(--fs-40);
+    }
+    .section__icon { position: absolute; left: 27px; top: 21px; width: 97px; height: 97px; }
+
+    /* ---------- genre filters ---------- */
+    .genres { position: absolute; display: flex; }
+    .genres--trending { left: 42px; top: 136px; }
+    .genres--movies { left: 28px; top: 151px; }
+    .genres__li { flex: 0 0 auto; width: var(--w, auto); }
+    .genres__item {
+      position: relative; display: block; width: 100%; text-align: left;
+      font-family: var(--font-inder); font-size: var(--fs-32); color: var(--color-white);
+      height: 40px;
+    }
+    .genres__pill {
+      position: absolute; left: 0; top: 0; width: 148px; height: var(--h);
+      border-radius: var(--radius-pill); background: var(--color-pill);
+    }
+    .genres__li:nth-child(4) .genres__pill { background: var(--color-pill-alt); }
+    .genres__label {
+      position: relative; display: inline-block; top: var(--ly); padding-left: var(--lx);
+      white-space: nowrap;
+    }
+    .genres__item:focus-visible { outline: 2px solid var(--color-white); outline-offset: 4px; }
+
+    /* ---------- sort bar ---------- */
+    .sort { display: contents; }
+    .sort__label {
+      position: absolute; left: 102px; top: 231px;
+      font-family: var(--font-inder); font-size: var(--fs-20);
+    }
+    .sort__option {
+      position: absolute; font-family: var(--font-inder); font-size: var(--fs-20);
+      color: var(--color-white); text-align: left;
+    }
+    .sort__option--active {
+      left: 214px; top: 234px; width: 95px; height: 20px;
+      border-radius: var(--radius-pill); background: var(--color-sort);
+    }
+    .sort__option--active .sort__text { position: absolute; left: 11px; top: -4px; }
+    .sort__option--year { left: 367px; top: 229px; }
+    .sort__option--az { left: 486px; top: 228px; }
+    .sort__caret { position: absolute; width: 24px; height: 24px; top: 2px; }
+    .sort__option--year .sort__caret { left: 37px; }
+    .sort__option--az .sort__caret { left: 31px; }
+    .sort__option--year .sort__text, .sort__option--az .sort__text { white-space: nowrap; }
+
+    /* ---------- cards ---------- */
+    .cards { display: flex; }
+    .cards--lg { position: absolute; left: 41px; top: 283px; gap: 29px; }
+    .cards__item--shift { margin-left: 27px; }
+    .movies__viewport { position: absolute; left: 0; top: 318px; width: 100%; overflow: hidden; }
+    .cards--sm { margin-left: 0; }
+    .cards__item--sm { flex: 0 0 187px; margin-left: var(--gap); }
+
+    .card { position: relative; }
+    .card--lg { width: 311px; height: 570px; }
+    .card--sm { width: 187px; height: 430px; }
+    .card__img { position: absolute; left: 0; top: 8px; width: 311px; height: 467px; object-fit: cover; border-radius: var(--radius-pill); }
+    .card--first .card__img { top: 0; }
+    .card--sm .card__img { top: 0; width: 187px; height: 318px; }
+
+    .card__title { position: absolute; font-weight: 400; color: var(--color-white); white-space: nowrap; }
+    .card__title--lg { left: var(--tx); top: 497px; font-family: var(--font-inria); font-size: var(--fs-32); }
+    .card__title--sm { left: var(--tx); top: var(--ty); font-family: var(--font-inder); font-size: var(--fs-20); }
+
+    .card__icons { position: absolute; left: 0; top: 482px; }
+    .icon { position: absolute; left: var(--x); top: 0; width: 15px; height: 15px; }
+    .icon__img { width: 100%; height: 100%; }
+    .icon--stroke { width: 14px; height: 14px; }
+    .icon--stroke .icon__img { position: absolute; left: -7.18%; top: -6.58%; width: 114.36%; height: 113.16%; }
+
+    .card__year, .card__score {
+      position: absolute; left: var(--x); top: var(--y);
+      font-family: var(--font-inria); font-size: var(--fs-15); color: var(--color-white); white-space: pre;
+    }
+
+    .eye {
+      position: absolute; left: var(--x); top: var(--y);
+      width: 19px; height: 19px; background: var(--color-icon-bg);
+      --iw: 113.14%; --ih: 118.04%; --il: -6.57%; --it: -9.02%;
+    }
+    .eye--s16 { width: 16px; height: 16px; --iw: 115.6%; --ih: 121.42%; --il: -7.8%; --it: -10.71%; }
+    .eye--s20 { width: 20px; height: 20px; --iw: 112.48%; --ih: 117.14%; --il: -6.24%; --it: -8.57%; }
+    .eye--flip { transform: scaleX(-1); }
+    .eye__shape { position: absolute; inset: 20.83% 9.95% 20.83% 9.94%; }
+    .eye__img { position: absolute; left: var(--il); top: var(--it); width: var(--iw); height: var(--ih); }
+
+    /* ==========================================================
+       Footer
+       ========================================================== */
+    .footer { position: relative; height: 400px; font-family: var(--font-42dot); font-weight: 700; color: var(--color-white); }
+    .footer__col { position: absolute; top: 0; }
+    .footer__col--about { left: 30px; width: 266px; }
+    .footer__col--earn { left: 359px; width: 293px; }
+    .footer__col--help { left: 753px; width: 211px; }
+    .footer__col--pay { left: 1103px; width: 243px; }
+    .footer__heading { font-family: inherit; font-weight: 700; font-size: var(--fs-16); }
+    .footer__heading--lg { font-size: var(--fs-20); }
+    .footer__list { font-size: var(--fs-13); }
+    .footer__col--about .footer__list { font-size: var(--fs-14); }
+    .footer__more { position: absolute; left: 47.69px; top: 257px; width: 204px; font-size: var(--fs-16); }
+    .footer__legal {
+      position: absolute; left: 3px; top: 331.55px; width: 1430px; height: 68.44px;
+      background: var(--color-legal-bg); font-size: var(--fs-16); color: var(--color-legal-text);
+    }
+    .footer__legal-item { position: absolute; top: 15.9px; white-space: nowrap; }
+    .footer__legal-item--terms { left: 27.66px; }
+    .footer__legal-item--privacy { left: 248.97px; }
+    .footer__legal-item--ads { left: 437.3px; top: 13.45px; }
+    .footer__legal-item--copy { left: 1051.22px; top: 14.67px; color: var(--color-legal-text-alt); }
+
+    /* ==========================================================
+       Tablet  (max-width: 1024px)
+       ========================================================== */
+    @media (max-width: 1024px) {
+      .page { max-width: none; }
+
+      /* header + hamburger */
+      .header {
+        height: auto; display: flex; flex-wrap: wrap; align-items: center;
+        justify-content: space-between; padding: var(--space-24) var(--space-32);
+      }
+      .header__logo { position: static; width: auto; height: auto; font-size: var(--fs-40); }
+      .header__toggle {
+        display: flex; flex-direction: column; justify-content: center; gap: 6px;
+        width: 44px; height: 44px; padding: 8px;
+      }
+      .header__toggle:focus-visible { outline: 2px solid var(--color-white); outline-offset: 2px; }
+      .header__bar {
+        display: block; width: 100%; height: 3px; border-radius: 2px; background: var(--color-nav);
+        transition: transform var(--transition-menu), opacity var(--transition-menu);
+      }
+      .header__toggle[aria-expanded="true"] .header__bar:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+      .header__toggle[aria-expanded="true"] .header__bar:nth-child(2) { opacity: 0; }
+      .header__toggle[aria-expanded="true"] .header__bar:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+      .nav {
+        position: static; width: 100%; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+        transition: max-height var(--transition-menu), opacity var(--transition-menu), visibility 0s linear 0.35s;
+      }
+      .nav--open {
+        max-height: 360px; opacity: 1; visibility: visible;
+        transition: max-height var(--transition-menu), opacity var(--transition-menu), visibility 0s;
+      }
+      .nav__list { flex-direction: column; padding: var(--space-16) 0 var(--space-8); }
+      .nav__item, .nav__item--profile, .nav__item--movie, .nav__item--webseries, .nav__item--help { width: auto; }
+      .nav__link { padding: var(--space-8) 0; }
+
+      /* hero */
+      .hero { height: auto; }
+      .hero__media { margin-left: 0; width: 100%; height: auto; aspect-ratio: 1437 / 710; }
+      .hero__content {
+        display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
+        gap: var(--space-8); padding: var(--space-24) var(--space-32) var(--space-32);
+      }
+      .hero__stats { display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
+      .hero__actions { display: flex; gap: var(--space-16); }
+      .hero__season, .hero__star, .hero__score, .hero__details, .hero__title, .hero__text,
+      .hero__btn, .hero__btn-icon, .hero__btn-label, .hero__indicator { position: static; width: auto; }
+      .hero__season { order: -1; }
+      .hero__title { font-size: var(--fs-64); }
+      .hero__text { max-width: 503px; font-size: var(--fs-16); }
+      .hero__btn {
+        display: inline-flex; align-items: center; gap: var(--space-8);
+        height: 41px; width: auto; padding: 0 var(--space-24) 0 var(--space-8);
+      }
+      .hero__btn-icon { width: 24px; height: 24px; }
+      .hero__indicator { position: absolute; left: 50%; bottom: var(--space-8); width: 80px; transform: translateX(-50%); }
+
+      /* sections */
+      .section--trending, .section--movies {
+        height: auto; display: flex; flex-direction: column; gap: var(--space-24);
+        padding: var(--space-32);
+      }
+      .section__title, .section__title--movies, .section__icon, .genres, .sort, .sort__label,
+      .sort__option, .sort__option--active, .sort__text, .sort__caret,
+      .cards--lg, .movies__viewport { position: static; }
+      .section__title { font-size: var(--fs-32); }
+      .section__heading { display: flex; align-items: center; gap: var(--space-16); }
+      .section__icon { width: 72px; height: 72px; }
+      .section__title--movies { font-size: var(--fs-40); }
+
+      .genres { flex-wrap: wrap; gap: var(--space-12) var(--space-16); }
+      .genres__li { width: auto; }
+      .genres__item { height: auto; width: auto; font-size: var(--fs-24); }
+      .genres__pill { display: none; }
+      .genres__label { top: 0; padding: var(--space-4) var(--space-16); }
+      .genres__item--active .genres__label { background: var(--color-pill); border-radius: var(--radius-pill); }
+      .genres__li:nth-child(4) .genres__item--active .genres__label { background: var(--color-pill-alt); }
+
+      .sort { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-16); }
+      .sort__option { display: inline-flex; align-items: center; font-size: var(--fs-20); }
+      .sort__option--active { width: auto; height: auto; padding: 2px var(--space-12); }
+      .sort__caret { width: 24px; height: 24px; }
+
+      /* cards */
+      .cards--lg {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-32) var(--space-24);
+      }
+      .cards__item--shift { margin-left: 0; }
+      .card--lg, .card--sm { width: 100%; height: auto; display: flex; flex-direction: column; gap: var(--space-8); }
+      .card__img, .card--sm .card__img, .card--first .card__img {
+        position: static; width: 100%; height: auto; aspect-ratio: 311 / 467;
+      }
+      .card__icons { position: static; display: flex; gap: var(--space-12); min-height: 15px; }
+      .icon { position: static; }
+      .icon--stroke { position: relative; }
+      .card__title, .card__title--lg, .card__title--sm { position: static; }
+      .card__title--lg { font-size: var(--fs-32); }
+      .card__meta { display: flex; align-items: center; gap: var(--space-12); }
+      .card__year, .card__score, .eye { position: static; }
+
+      .movies__viewport { width: 100%; overflow-x: auto; padding-bottom: var(--space-8); }
+      .cards--sm { width: max-content; margin-left: 0; gap: var(--space-16); }
+      .cards__item--sm { margin-left: 0; }
+      .card--sm { width: 187px; }
+      .card--sm .card__img { width: 187px; height: 318px; aspect-ratio: auto; }
+
+      /* footer */
+      .footer {
+        height: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-32); padding: var(--space-32) var(--space-32) 0;
+      }
+      .footer__col, .footer__more, .footer__legal, .footer__legal-item { position: static; width: auto; }
+      .footer__more { grid-column: 1 / -1; }
+      .footer__legal {
+        grid-column: 1 / -1; height: auto; display: flex; flex-wrap: wrap;
+        gap: var(--space-8) var(--space-24); margin: 0 calc(var(--space-32) * -1);
+        padding: var(--space-16) var(--space-32);
+      }
+    }
+
+    /* ==========================================================
+       Mobile  (max-width: 768px)
+       ========================================================== */
+    @media (max-width: 768px) {
+      .header { padding: var(--space-16) var(--space-24); }
+      .header__logo { font-size: 32px; }
+
+      .hero__media { aspect-ratio: 3 / 4; }
+      .hero__img { width: 133.33cqw; height: 100cqw; }
+      .hero__content { padding: var(--space-16) var(--space-24) var(--space-32); }
+      .hero__title { font-size: var(--fs-40); }
+      .hero__text { font-size: var(--fs-14); }
+      .hero__btn { font-size: var(--fs-16); }
+
+      .section--trending, .section--movies { padding: var(--space-24); gap: var(--space-16); }
+      .section__title { font-size: var(--fs-24); }
+      .section__title--movies { font-size: var(--fs-32); }
+      .section__icon { width: 56px; height: 56px; }
+      .genres__item { font-size: var(--fs-16); }
+      .genres__label { padding: var(--space-4) var(--space-12); }
+      .sort__label, .sort__option { font-size: var(--fs-16); }
+
+      .cards--lg { gap: var(--space-24) var(--space-16); }
+      .card__title--lg { font-size: var(--fs-20); }
+      .card__title--sm { font-size: var(--fs-16); }
+
+      .footer { grid-template-columns: minmax(0, 1fr); padding: var(--space-24) var(--space-24) 0; }
+      .footer__legal { margin: 0 calc(var(--space-24) * -1); padding: var(--space-16) var(--space-24); flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="header">
+      <a class="header__logo" href="#">NETFLIX</a>
+
+      <button class="header__toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+        <span class="header__bar"></span>
+        <span class="header__bar"></span>
+        <span class="header__bar"></span>
+      </button>
+
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <ul class="nav__list">
+          <li class="nav__item nav__item--home"><a class="nav__link" href="#">Home</a></li>
+          <li class="nav__item nav__item--profile"><a class="nav__link" href="#">Profile</a></li>
+          <li class="nav__item nav__item--movie"><a class="nav__link" href="#">Movie</a></li>
+          <li class="nav__item nav__item--webseries"><a class="nav__link" href="#">Webseries</a></li>
+          <li class="nav__item nav__item--help"><a class="nav__link" href="#">Help</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__media">
+          <img class="hero__img" src="assets/images/hero.png" alt="Spider-Man in a red and black suit with arms crossed in front of large red lettering" width="710" height="1437">
+        </div>
+        <div class="hero__content">
+          <p class="hero__season">seanon 1+16 episode</p>
+          <div class="hero__stats">
+            <img class="hero__star" src="assets/icons/vector-0.svg" alt="" width="15" height="15">
+            <p class="hero__score">9.1</p>
+            <p class="hero__details">2017 acting story 2 season </p>
+          </div>
+          <h1 class="hero__title" id="hero-title">SAVE ME</h1>
+          <p class="hero__text">Series adapted from the webcomic entitled <br>out of the World by writer jo Geum -san</p>
+          <div class="hero__actions">
+            <button class="hero__btn hero__btn--watch" type="button">
+              <img class="hero__btn-icon" src="assets/icons/movie.svg" alt="" width="32" height="32">
+              <span class="hero__btn-label">WATCH</span>
+            </button>
+            <button class="hero__btn hero__btn--list" type="button">
+              <span class="hero__btn-label">Add list</span>
+            </button>
+          </div>
+          <span class="hero__indicator" aria-hidden="true"></span>
+        </div>
+      </section>
+
+      <section class="section section--trending" aria-labelledby="trending-title">
+        <h2 class="section__title" id="trending-title">Trends Now</h2>
+
+        <ul class="genres genres--trending" aria-label="Filter trending by genre">
+          <li class="genres__li" style="--w:219px;"><button class="genres__item genres__item--active" type="button" aria-pressed="true"><span class="genres__pill" style="--h:35px"></span><span class="genres__label" style="--lx:23px;--ly:-5px">Action</span></button></li>
+          <li class="genres__li" style="--w:232px;"><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:0px">Adventure</span></button></li>
+          <li class="genres__li" style="--w:228px;"><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:0px">Biography</span></button></li>
+          <li class="genres__li" style="--w:221px;"><button class="genres__item genres__item--active" type="button" aria-pressed="true"><span class="genres__pill" style="--h:40px"></span><span class="genres__label" style="--lx:27px;--ly:-2px">Crime</span></button></li>
+          <li class="genres__li" style="--w:210px;"><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:-4px">Comedy</span></button></li>
+          <li class="genres__li" style=""><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:0px">Documentary</span></button></li>
+        </ul>
+
+        <ul class="cards cards--lg">
+          <li class="cards__item">
+            <article class="card card--lg card--first" style="--tx:57px">
+              <img class="card__img" src="assets/images/poster-baththa.png" alt="BATHTHA movie poster" width="311" height="467" loading="lazy">
+              <div class="card__icons" aria-hidden="true"><span class="icon icon--plain" style="--x:62px"><img class="icon__img" src="assets/icons/vector-1.svg" alt="" width="15" height="15"></span><span class="icon icon--stroke" style="--x:90px"><img class="icon__img" src="assets/icons/vector-6.svg" alt="" width="15" height="15"></span></div>
+              <h3 class="card__title card__title--lg">BATHTHA</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:16px;--y:555px">2021</span>
+                <span class="eye " style="--x:116px;--y:555px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-1.svg" alt="" width="16" height="16"></span></span>
+                <span class="card__score" style="--x:155px;--y:559px">9.7</span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item">
+            <article class="card card--lg" style="--tx:95px">
+              <img class="card__img" src="assets/images/poster-thala.png" alt="THALA movie poster" width="311" height="467" loading="lazy">
+              <div class="card__icons" aria-hidden="true"><span class="icon icon--stroke" style="--x:117px"><img class="icon__img" src="assets/icons/vector-9.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:144px"><img class="icon__img" src="assets/icons/vector-0.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:170px"><img class="icon__img" src="assets/icons/vector-0.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:197px"><img class="icon__img" src="assets/icons/vector-4.svg" alt="" width="15" height="15"></span></div>
+              <h3 class="card__title card__title--lg">THALA</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:35px;--y:550px">2019</span>
+                <span class="eye " style="--x:86px;--y:551px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-4.svg" alt="" width="16" height="16"></span></span>
+                <span class="card__score" style="--x:234px;--y:550px">9.8</span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item">
+            <article class="card card--lg" style="--tx:95px">
+              <img class="card__img" src="assets/images/poster-animal.png" alt="ANIMAL movie poster" width="311" height="467" loading="lazy">
+              <div class="card__icons" aria-hidden="true"><span class="icon icon--stroke" style="--x:95px"><img class="icon__img" src="assets/icons/vector-10.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:153px"><img class="icon__img" src="assets/icons/vector-5.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:181px"><img class="icon__img" src="assets/icons/vector-0.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:209px"><img class="icon__img" src="assets/icons/vector-5.svg" alt="" width="15" height="15"></span></div>
+              <h3 class="card__title card__title--lg">ANIMAL</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:52px;--y:549px">2024</span>
+                <span class="eye eye--s20" style="--x:117px;--y:550px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-5.svg" alt="" width="16" height="16"></span></span>
+                
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--shift">
+            <article class="card card--lg" style="--tx:93px">
+              <img class="card__img" src="assets/images/poster-pushpa-2.png" alt="PUSHPA 2 movie poster" width="311" height="467" loading="lazy">
+              <div class="card__icons" aria-hidden="true"><span class="icon icon--stroke" style="--x:84px"><img class="icon__img" src="assets/icons/vector-10.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:140px"><img class="icon__img" src="assets/icons/vector-0.svg" alt="" width="15" height="15"></span><span class="icon icon--plain" style="--x:169px"><img class="icon__img" src="assets/icons/vector-0.svg" alt="" width="15" height="15"></span></div>
+              <h3 class="card__title card__title--lg">PUSHPA 2</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:42px;--y:552px">2026</span>
+                <span class="eye eye--s20" style="--x:112px;--y:551px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-6.svg" alt="" width="16" height="16"></span></span>
+                
+              </div>
+            </article>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section section--movies" aria-labelledby="movies-title">
+        <div class="section__heading">
+          <img class="section__icon" src="assets/icons/movie-camera.svg" alt="" width="97" height="97">
+          <h2 class="section__title section__title--movies" id="movies-title">MOVIES</h2>
+        </div>
+
+        <ul class="genres genres--movies" aria-label="Filter movies by genre">
+          <li class="genres__li" style="--w:219px;"><button class="genres__item genres__item--active" type="button" aria-pressed="true"><span class="genres__pill" style="--h:35px"></span><span class="genres__label" style="--lx:23px;--ly:-5px">Action</span></button></li>
+          <li class="genres__li" style="--w:232px;"><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:0px">Adventure</span></button></li>
+          <li class="genres__li" style="--w:228px;"><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:0px">Biography</span></button></li>
+          <li class="genres__li" style="--w:221px;"><button class="genres__item genres__item--active" type="button" aria-pressed="true"><span class="genres__pill" style="--h:40px"></span><span class="genres__label" style="--lx:27px;--ly:-2px">Crime</span></button></li>
+          <li class="genres__li" style="--w:210px;"><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:-4px">Comedy</span></button></li>
+          <li class="genres__li" style=""><button class="genres__item" type="button" aria-pressed="false"><span class="genres__label" style="--lx:0px;--ly:0px">Documentary</span></button></li>
+        </ul>
+
+        <div class="sort">
+          <span class="sort__label">Sort by</span>
+          <button class="sort__option sort__option--active" type="button"><span class="sort__text">Leasted</span></button>
+          <button class="sort__option sort__option--year" type="button"><span class="sort__text">Year</span><img class="sort__caret" src="assets/icons/caret-down.svg" alt="" width="24" height="24"></button>
+          <button class="sort__option sort__option--az" type="button"><span class="sort__text">A-z</span><img class="sort__caret" src="assets/icons/caret-down.svg" alt="" width="24" height="24"></button>
+        </div>
+
+        <div class="movies__viewport">
+          <ul class="cards cards--sm">
+          <li class="cards__item cards__item--sm" style="--gap:-30px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-gold.png" alt="GOLD movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:41px;--ty:336px">GOLD</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:37px;--y:379px">2021</span>
+                <span class="eye eye--s16" style="--x:135px;--y:379px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-2.svg" alt="" width="16" height="16"></span></span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--sm" style="--gap:29px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-12th-fail.png" alt="12th Fail movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:25px;--ty:334px">12th Fail</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:1px;--y:380px">2019</span>
+                <span class="eye eye--s16" style="--x:108px;--y:381px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-2.svg" alt="" width="16" height="16"></span></span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--sm" style="--gap:31px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-ms-dhoni.png" alt="M.S.Dhoni movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:51px;--ty:334px">M.S.Dhoni</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:21px;--y:381px">2018</span>
+                
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--sm" style="--gap:31px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-chhaava.png" alt="CHHAAVA movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:59px;--ty:330px">CHHAAVA</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:28px;--y:384px">2121</span>
+                <span class="eye eye--s16" style="--x:92px;--y:385px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-2.svg" alt="" width="16" height="16"></span></span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--sm" style="--gap:47px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-tanhaji.png" alt="Tanhaji movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:66px;--ty:330px">Tanhaji</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:18px;--y:382px">2028</span>
+                <span class="eye eye--s16" style="--x:88px;--y:385px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-2.svg" alt="" width="16" height="16"></span></span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--sm" style="--gap:37px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-kesari.png" alt="KESARI movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:62px;--ty:330px">KESARI</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:16px;--y:388px">2030</span>
+                <span class="eye eye--s16" style="--x:81px;--y:387px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-2.svg" alt="" width="16" height="16"></span></span>
+              </div>
+            </article>
+          </li>
+          <li class="cards__item cards__item--sm" style="--gap:37px">
+            <article class="card card--sm">
+              <img class="card__img" src="assets/images/poster-rustom.png" alt="RUSTOM movie poster" width="187" height="318" loading="lazy">
+              <h3 class="card__title card__title--sm" style="--tx:46px;--ty:330px">RUSTOM</h3>
+              <div class="card__meta">
+                <span class="card__year" style="--x:-6px;--y:388px">2090</span>
+                <span class="eye eye--s20 eye--flip" style="--x:64px;--y:384px" aria-hidden="true"><span class="eye__shape"><img class="eye__img" src="assets/icons/eye-3.svg" alt="" width="16" height="16"></span></span>
+              </div>
+            </article>
+          </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <nav class="footer__col footer__col--about" aria-label="Get to know more us">
+        <h2 class="footer__heading">GET to KNOW MORE US</h2>
+        <ul class="footer__list">
+          <li><a href="#">careers</a></li>
+          <li><a href="#">Biog</a></li>
+          <li><a href="#">About Amazon</a></li>
+          <li><a href="#">Invester Relations</a></li>
+          <li><a href="#">Amazon Devices</a></li>
+          <li><a href="#">Amazon Tour</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col footer__col--earn" aria-label="Make money with us">
+        <h2 class="footer__heading footer__heading--lg">Make Money with Us</h2>
+        <ul class="footer__list">
+          <li><a href="#">sell products on Amazon</a></li>
+          <li><a href="#">Sell apps on Amazon</a></li>
+          <li><a href="#">Become An affiate</a></li>
+          <li><a href="#">Asvertise Your products</a></li>
+          <li><a href="#">Sell - Publish with Us</a></li>
+          <li><a href="#">Host an Hub</a></li>
+          <li><a href="#">see more make Money</a></li>
+          <li><a href="#">y with Us</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col footer__col--help" aria-label="Let us help you">
+        <h2 class="footer__heading footer__heading--lg">Let Us Help You</h2>
+        <ul class="footer__list">
+          <li><a href="#">Amazon And COVID-19</a></li>
+          <li><a href="#">Your Account</a></li>
+          <li><a href="#">your Order</a></li>
+          <li><a href="#">Shipping Rates &amp; policies</a></li>
+          <li><a href="#">Returns &amp; Replacement</a></li>
+          <li><a href="#">Manage Your Conect and Devices</a></li>
+          <li><a href="#">Amazon Acocistes</a></li>
+          <li><a href="#">Help</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col footer__col--pay" aria-label="Amazon payment products">
+        <h2 class="footer__heading">Amazon Payment Products</h2>
+        <ul class="footer__list">
+          <li><a href="#">Amazon Business Card</a></li>
+          <li><a href="#">Reaload Your Balance</a></li>
+          <li><a href="#">Amazon Currency</a></li>
+          <li><a href="#">converter</a></li>
+        </ul>
+      </nav>
+
+      <a class="footer__more" href="#">View More information</a>
+
+      <div class="footer__legal">
+        <a class="footer__legal-item footer__legal-item--terms" href="#">Condition off us</a>
+        <a class="footer__legal-item footer__legal-item--privacy" href="#">Privacy notice</a>
+        <a class="footer__legal-item footer__legal-item--ads" href="#">Intrest arred adv</a>
+        <p class="footer__legal-item footer__legal-item--copy">192898785129 Amazone.in or in offer</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      var toggle = document.querySelector('.header__toggle');
+      var nav = document.getElementById('primary-nav');
+      var desktop = window.matchMedia('(min-width: 1025px)');
+
+      function setOpen(open) {
+        nav.classList.toggle('nav--open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      }
+
+      toggle.addEventListener('click', function () {
+        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+      desktop.addEventListener('change', function (e) {
+        if (e.matches) setOpen(false);
+      });
+    })();
+  </script>
+</body>
+</html>
